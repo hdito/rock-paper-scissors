@@ -18,20 +18,20 @@ function getPlayerTurn(params) {
 
 function evaluateTurn(playerSelection, computerSelection) {
     if (playerSelection === computerSelection) {
-        return `It's a tie! ${playerSelection.slice(0, 1).toUpperCase() + playerSelection.slice(1)} can't beat another ${playerSelection}.`
+        return 1
     } else if (playerSelection === "rock" && computerSelection === "paper") {
-        return "You lose! Paper beats rock"
+        return 0
     } else if (playerSelection === "rock" && computerSelection === "scissors") {
-        return "You win! Rock beats scissors"
+        return 1
     } else if (playerSelection === "paper" && computerSelection === "rock") {
-        return "You win! Paper beats rock"
+        return 1
     } else if (playerSelection === "paper" && computerSelection === "scissors") {
-        return "You lose! Scissors beat paper"
+        return 0
     } else if (playerSelection === "scissors" && computerSelection === "rock") {
-        return "You lose! Rock beats scissors"
+        return 0
     } else if (playerSelection === "scissors" && computerSelection === "paper") {
-        return "You win! Scissors beat paper"
-    } else return "You lose! Show something!"
+        return 1
+    } else return 0
 
 }
 
@@ -39,13 +39,14 @@ function game(rule, player, computer) {
     let winnerCount = 0;
     let loserCount = 0;
     for (let index = 0; index < 5; index++) {
-        let result = rule(player(), computer());
-        if (/You win/i.test(result)) {
+        const result = rule(player(), computer());
+        console.log(result);
+
+        if (result === 1) {
             winnerCount++;
-        } else if (/You lose/i.test(result)) {
+        } else if (result === 0) {
             loserCount++;
         }
-        console.log(result);
     }
     if (winnerCount > loserCount) {
         return `You win with ${winnerCount} victories`;
