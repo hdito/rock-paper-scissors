@@ -1,4 +1,4 @@
-function computerPlay(params) {
+function computerPlay() {
     const computerTurn = Math.floor(Math.random() * 3);
     switch (computerTurn) {
         case 0:
@@ -10,49 +10,70 @@ function computerPlay(params) {
     }
 }
 
-function getPlayerTurn(params) {
-    const playerTurn = prompt("Your turn:", "") ?? "";
-    const standardizedTurnOutput = playerTurn.toLowerCase();
-    return standardizedTurnOutput;
+function showResult(result) {
+    let round = document.querySelector('#round');
+    let playerWins = document.querySelector('#playerWins');
+    let computerWins = document.querySelector('#computerWins');
+    if (result === 0) {
+        round.textContent++;
+    } else if (result === 1) {
+        playerWins.textContent++;
+        round.textContent++;
+    } else {
+        computerWins.textContent++;
+        round.textContent++;
+    }
 }
 
-function evaluateTurn(playerSelection, computerSelection) {
+function playRound(playerSelection, computerSelection) {
+    console.log("everything's ok!")
+    console.log(playerSelection, computerSelection)
     if (playerSelection === computerSelection) {
-        return 1
-    } else if (playerSelection === "rock" && computerSelection === "paper") {
-        return 0
-    } else if (playerSelection === "rock" && computerSelection === "scissors") {
-        return 1
-    } else if (playerSelection === "paper" && computerSelection === "rock") {
-        return 1
-    } else if (playerSelection === "paper" && computerSelection === "scissors") {
-        return 0
-    } else if (playerSelection === "scissors" && computerSelection === "rock") {
-        return 0
-    } else if (playerSelection === "scissors" && computerSelection === "paper") {
-        return 1
-    } else return 0
-
-}
-
-function game(rule, player, computer) {
-    let winnerCount = 0;
-    let loserCount = 0;
-    for (let index = 0; index < 5; index++) {
-        const result = rule(player(), computer());
-        console.log(result);
-
-        if (result === 1) {
-            winnerCount++;
-        } else if (result === 0) {
-            loserCount++;
+        showResult(0);
+    } else if (playerSelection === "rock") {
+        if (computerSelection === "paper") {
+            showResult(2);
+        } else if (computerSelection === "scissors") {
+            showResult(1);
         }
     }
-    if (winnerCount > loserCount) {
-        return `You win with ${winnerCount} victories`;
-    } else if (winnerCount < loserCount) {
-        return `Computer win with ${loserCount} victories`
-    } else return `Tie! You and computer have ${winnerCount} victories`
+    else if (playerSelection === "paper") {
+        if (computerSelection === "rock") {
+            showResult(1);
+        } else if (computerSelection === "scissors") {
+            showResult(2);
+        }
+    } else if (playerSelection === "scissors") {
+        if (computerSelection === "rock") {
+            showResult(2);
+        }
+        else if (computerSelection === "paper") {
+            showResult(1);
+        }
+    } else {
+        showResult(2);
+    }
 }
 
-console.log(game(evaluateTurn, getPlayerTurn, computerPlay));
+function checkEnd() {
+    const round = document.querySelector('#round').textContent;
+    const buttons = document.querySelectorAll('button');
+
+    if (round >= 5) {
+        buttons.forEach(button => button.setAttribute("disabled", "disabled"));
+        const result = document.querySelector('#result');
+        const computerWins = document.querySelector('#computerWins').textContent;
+        const playerWins = document.querySelector('#playerWins').textContent;
+        if (computerWins < playerWins) {
+            result.textContent = 'You win!';
+        } else if (computerWins > playerWins) {
+            result.textContent = 'You lose!';
+        } else result.textContent = 'Tie!'
+    }
+}
+
+const buttons = document.querySelectorAll('button');
+const results = document.querySelectorAll('div > div');
+
+buttons.forEach(button => button.addEventListener('click', function () { playRound(button.textContent.toLowerCase(), computerPlay()) }))
+buttons.forEach(button => button.addEventListener('click', checkEnd))
